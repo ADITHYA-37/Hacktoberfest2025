@@ -2,31 +2,35 @@
 #include <vector>
 using namespace std;
 
-int maxWater(vector<int>& arr) {
+int maxWater(vector<int>& height) {
+    int n = height.size();
+    if (n == 0) return 0;
+
+    int left = 0, right = n - 1;
+    int left_max = 0, right_max = 0;
     int res = 0;
 
-    // For every element of the array
-    for (int i = 1; i < arr.size() - 1; i++) {
-
-        // Find the maximum element on its left
-        int left = arr[i];
-        for (int j = 0; j < i; j++)
-            left = max(left, arr[j]);
-
-        // Find the maximum element on its right
-        int right = arr[i];
-        for (int j = i + 1; j < arr.size(); j++)
-            right = max(right, arr[j]);
-
-        // Update the maximum water
-        res += (min(left, right) - arr[i]);
+    while (left < right) {
+        if (height[left] <= height[right]) {
+            if (height[left] >= left_max)
+                left_max = height[left];      // Update left boundary
+            else
+                res += left_max - height[left]; // Add trapped water
+            left++;
+        } else {
+            if (height[right] >= right_max)
+                right_max = height[right];     // Update right boundary
+            else
+                res += right_max - height[right]; // Add trapped water
+            right--;
+        }
     }
-
     return res;
 }
 
 int main() {
-    vector<int> arr = { 2, 1, 5, 3, 1, 0, 4 };
+    vector<int> arr = {2, 1, 5, 3, 1, 0, 4};
     cout << maxWater(arr);
     return 0;
 }
+
